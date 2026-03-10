@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>五子棋对战</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <style>
+    .board-wood {
+      background-image:
+        linear-gradient(#000 1px, transparent 1px),
+        linear-gradient(90deg, #000 1px, transparent 1px),
+        url('frontend/static/img/wood.jpg');
+      background-size:
+        calc(100% / 14) calc(100% / 14),
+        calc(100% / 14) calc(100% / 14),
+        cover;
+      background-repeat: repeat, repeat, no-repeat;
+      background-position: 0 0, 0 0, center;
+      box-shadow: 0 4px 16px #bfa76a inset, 0 0 8px #fff8e1 inset;
+    }
+    .piece-black {
+      background: radial-gradient(circle at 35% 35%, #444, #000);
+      box-shadow: 0 0 5px rgba(0,0,0,0.7);
+    }
+    .piece-white {
+      background: radial-gradient(circle at 35% 35%, #fff, #ddd);
+      box-shadow: 0 0 5px rgba(255,255,255,0.7);
+    }
+    #effect-popup {
+      background: rgba(0,0,0,0.2);
+    }
+    .shake {
+      animation: shake 0.6s;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(4px); }
+      30%, 50%, 70% { transform: translateX(-8px); }
+      40%, 60% { transform: translateX(8px); }
+    }
+    .bg-style-default { background: #f3f4f6; }
+    .bg-style-dark { background: linear-gradient(135deg, #232526 0%, #414345 100%); }
+    .bg-style-blue { background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%); }
+    .bg-style-green { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
+    .bg-style-pink { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+    .chat-message {
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .chat-message.self {
+      align-self: flex-end;
+      background-color: #e3f2fd;
+    }
+    .chat-message.other {
+      align-self: flex-start;
+      background-color: #f5f5f5;
+    }
+    #invite-btn {
+      background: linear-gradient(to right, #4CAF50, #2E7D32);
+    }
+    #invite-btn:hover {
+      background: linear-gradient(to right, #388E3C, #1B5E20);
+    }
+  </style>
+</head>
+<body id="main-body" class="bg-style-default min-h-screen">
+  <!-- 主应用容器 -->
+
+  <div id="app" class="min-h-screen flex flex-col items-center justify-center p-4"></div>
+
+  <!-- 设置面板 -->
+  <div id="settings-panel" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <!-- 内容由SettingsPanel组件动态生成 -->
+  </div>
+
+  <!-- 音效 -->
+  <audio id="win-sound" src="frontend/static/audio/win.mp3"></audio>
+  <audio id="fail-sound" src="frontend/static/audio/fail.mp3"></audio>
+  <audio id="move-sound" src="frontend/static/audio/move.mp3"></audio>
+  <audio id="bgm-audio" src="frontend/static/audio/bgm.mp3" loop></audio>
+
+  <!-- 特效 -->
+  <div id="effect-popup" class="fixed inset-0 flex items-center justify-center z-50 pointer-events-none" style="display:none;">
+    <div id="effect-text" class="text-5xl font-extrabold text-white drop-shadow-lg animate-bounce"></div>
+  </div>
+  <canvas id="fireworks-canvas" class="fixed inset-0 pointer-events-none z-50" style="display:none;"></canvas>
+
+  <!-- 主应用脚本 -->
+  <script type="module">
+    // 添加错误处理
+    window.addEventListener('error', (e) => {
+      console.error('加载错误:', e);
+      alert('加载错误，请查看控制台: ' + e.message);
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM已加载');
+    });
+  </script>
+  <script type="module" src="frontend/static/js/app.js"></script>
+  
+<div id="chat-container"></div>
+</body>
+</html>
